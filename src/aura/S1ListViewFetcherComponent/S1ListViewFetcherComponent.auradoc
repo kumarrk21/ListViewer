@@ -1,0 +1,8 @@
+<aura:documentation access="GLOBAL">
+	<aura:description>
+		<p>
+			The <code>S1ListViwFetcherComponent</code> is a component that allows you to retrieve any list view from Salesforce1 even it was never accessed in the full site. There is an <a href="https://success.salesforce.com/ideaView?id=08730000000ky69AAA">idea</a> in the appexchange to implement this capability in the native app and until it gets implemented, you can use this component as a work around
+		</p>
+
+	</aura:description>
+</aura:documentation>

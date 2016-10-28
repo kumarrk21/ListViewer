@@ -1,0 +1,78 @@
+<aura:component access="GLOBAL" extensible="false" controller="S1ListViewFetcherCotroller" implements="flexipage:availableForAllPageTypes,force:appHostable">
+    <ltng:require styles="/resource/s1list/s1list/slds103/assets/styles/salesforce-lightning-design-system.css" />
+    <ltng:require scripts="/resource/s1list/s1list/lodash430.js" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="fromTabs" type="Boolean" default="false" access="GLOBAL" />
+    <aura:attribute name="sObjects" type="Object" />
+    <aura:attribute name="sObjectsFiltered" type="Object" />
+    <aura:attribute name="lists" type="Object" />
+    <aura:attribute name="listsFiltered" type="Object" />
+    <aura:attribute name="listsAvl" type="Boolean" default="false" />
+    <aura:attribute name="objectFilter" type="String" />
+    <aura:attribute name="listViewFilter" type="String" />
+    <aura:attribute name="sObjectSelectedName" type="String" />
+    <aura:attribute name="sObjectSelectedLabel" type="String" />
+    <div aura:id="_container" class="slds-m-around--small">
+        <div aura:id="_spinner" class="slds-spinner--large slds-container--center">
+            <img src="/resource/slds/assets/images/spinners/slds_spinner_brand.gif" alt="Loading..." />
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </div>
+        <div class="slds-form-element">
+            <div class="slds-lookup__control slds-input-has-icon slds-input-has-icon--right">
+                <c:s1svg class="slds-input__icon" ariaHidden="true" xlinkHref="/resource/s1list/s1list/slds103/assets/icons/utility-sprite/svg/symbols.svg#search" />
+                <ui:inputText aura:id="_objectFilter" class="slds-input" placeholder="{!'Search for objects...'}" updateOn="keyup" keyup="{!c.typeAhead}" blur="{!c.blurred}" value="{!v.objectFilter}"></ui:inputText>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <div aura:id="_objectLookupListBox" class="slds-m-top--small slds-hide">
+                <ul aura:id="_objectLookupList" role="presentation" class="listBox">
+                    <aura:iteration items="{!v.sObjectsFiltered}" var="sobj">
+                        <li class="slds-lookup__item  slds-has-divider--bottom" role="presentation">
+                            <button class="slds-button" data-id="{!sobj.name}" onclick="{!c.chooseObject}">{!sobj.label}</button>
+                        </li>
+                    </aura:iteration>
+                </ul>
+            </div>
+        </div>
+        <div aura:id="_selectedSObjectContainer" class="slds-hide slds-m-top--small">
+            <h3 class="slds-section-title--divider">Selected Object: <strong>{!v.sObjectSelectedLabel}</strong></h3>
+        </div>
+        <div aura:id="_listSearchContainer" class="slds-hide">
+            <div class="slds-form-element slds-m-top--small">
+                <div class="slds-lookup__control slds-input-has-icon slds-input-has-icon--right">
+                    <c:s1svg class="slds-input__icon" ariaHidden="true" xlinkHref="/resource/s1list/s1list/slds103/assets/icons/utility-sprite/svg/symbols.svg#search" />
+                    <ui:inputText aura:id="_listViewFilter" class="slds-input" placeholder="{!'Search for lists...'}" updateOn="keyup" keyup="{!c.typeAhead}" blur="{!c.blurred}" value="{!v.listViewFilter}"></ui:inputText>
+                </div>
+            </div>
+           
+            <div aura:id="_listLookupListBox" class="slds-hide slds-grid slds-m-top--small">
+            	<button class="slds-button slds-button--neutral slds-col--padded slds-size--1-of-1" onclick="{!c.getList}" >
+		                			<c:s1svg class="slds-icon slds-icon-text-default slds-icon--x-small" ariaHidden="true" xlinkHref="/resource/s1list/s1list/slds103/assets/icons/utility-sprite/svg/symbols.svg#search">
+		                			</c:s1svg>
+		                		'{!v.listViewFilter}' in {!v.sObjectSelectedName}
+		                		</button>
+            </div>
+
+            <div class="slds-form-element">
+                <div aura:id="_listItems" class="slds-m-top--small slds-hide">
+                    <aura:if isTrue="{!v.listsAvl}">
+                        <ul aura:id="_listItem" role="presentation" class="listBox">
+                            <aura:iteration items="{!v.lists}" var="item">
+                                <li class="slds-lookup__item  slds-has-divider--bottom" role="presentation" data-id="{!item.Id}" onclick="{!c.chooseList}">
+                                    <button class="slds-button slds-button--icon" role="option" data-id="{!item.Id}">
+                                        <c:s1svg class="slds-button__icon" xlinkHref="/resource/s1list/s1list/slds103/assets/icons/utility-sprite/svg/symbols.svg#rows">
+                                        </c:s1svg>
+                                        <span class="slds-m-left--small" data-id="{!item.Id}">{!item.Name}</span>
+                                    </button>
+                                </li>
+                            </aura:iteration>
+                        </ul>
+                        <aura:set attribute="else">
+                            <p>No lists available</p>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+        </div>
+    </div>
+</aura:component>

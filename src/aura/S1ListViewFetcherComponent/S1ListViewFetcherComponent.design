@@ -1,0 +1,3 @@
+<design:component label="S1 List Fetcher">
+	<design:attribute name="fromTabs" label="Object from Tabs" description="If selected, objects will be selected from visible tabs. If not selected, all accessible objects will be selected"/>
+</design:component>
